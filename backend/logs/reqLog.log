@@ -1,0 +1,9 @@
+2025-06-29	21:18:49	0ff87a31-1409-4e5a-9f1d-f1e8cf366cd7	GET	/	direct-access	::1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+2025-06-29	21:18:49	3a8f3b5d-e009-4dd6-81e0-452a11e11d8b	GET	/favicon.ico	http://localhost:5000/	::1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+2025-06-29	21:19:31	3af8da59-0449-481e-acf7-881b1c5cda85	GET	/api/v1/users	http://localhost:5000/api/v1/docs/	::1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+2025-06-29	21:19:58	07f14675-4cdd-456a-8c8f-f4d029cbf98f	POST	/api/v1/auth/login	http://localhost:5000	::1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+2025-06-29	21:20:05	7b3b6d6b-561f-46f0-a4ff-bbae0e8aebcc	POST	/api/v1/auth/login	http://localhost:5000	::1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+2025-06-29	21:20:14	c2319e7c-9442-4af5-a062-a86c141f635c	POST	/api/v1/auth/login	http://localhost:5000	::1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+2025-06-29	21:20:31	927f5fe1-cd0a-4c50-ae34-8922b6c137b3	GET	/api/v1/users	http://localhost:5000/api/v1/docs/	::1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+2025-06-29	21:22:01	f6542e1b-fee3-4507-9c5d-3c676a33e2ae	GET	/api/v1/	direct-access	::1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+2025-06-29	21:22:06	e8722878-11c4-4b6f-a572-407614757cf8	GET	/api/v1/1	direct-access	::1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
