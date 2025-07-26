@@ -255,7 +255,7 @@ router.route("/").post(createUser);
  *       500:
  *         description: Server error
  */
-router.route("/").get(protect, authorizeRoles("admin"), getAllUsers);
+router.route("/").get(getAllUsers);
 
 /**
  * @swagger
