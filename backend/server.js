@@ -18,12 +18,13 @@ import { getSwaggerOptions } from "./config/swaggerConfig.js";
 // Routes
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import studentRoutes from "./routes/student.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 const BASE_URL = process.env.API_BASE_URL || "/api/v1";
 
 connectMongoDb();
@@ -102,6 +103,7 @@ app.get(`${BASE_URL}`, (req, res) => {
 // Endpoints
 app.use(`${BASE_URL}/auth`, authRoutes);
 app.use(`${BASE_URL}/users`, userRoutes);
+app.use(`${BASE_URL}/student`, studentRoutes);
 
 app.all("*", (req, res) => {
   res.status(404);
