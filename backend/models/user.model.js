@@ -34,7 +34,7 @@ const UserSchema = new Schema(
       type: String,
       required: true,
       default: "student",
-      enum: ["warden", "lecturer", "admin"],
+      enum: ["admin", "warden", "accountant", "kitchen"],
     },
   },
   {

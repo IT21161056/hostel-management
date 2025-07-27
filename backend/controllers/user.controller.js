@@ -14,7 +14,7 @@ const createUser = asyncHandler(async (req, res) => {
     throw new Error("All fields are required");
   }
 
-  const validRoles = ["student", "user", "lecturer", "admin"];
+  const validRoles = ["admin", "warden", "accountant", "kitchen"];
   if (role && !validRoles.includes(role)) {
     res.status(400);
     throw new Error("Invalid role provided");
@@ -66,7 +66,7 @@ const createUser = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Get all users
+ * @desc    Get all users with pagination and filtering
  * @route   GET /api/users
  * @access  Private/Admin
  */
@@ -74,6 +74,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
   const { search, email, role, firstName, lastName } = req.query;
   let query = {};
 
+  // Build the query
   if (email) {
     query.email = { $regex: new RegExp(email, "i") };
   }
@@ -98,12 +99,23 @@ const getAllUsers = asyncHandler(async (req, res) => {
     ];
   }
 
-  const users = await User.find(query)
-    .select("-password -__v")
-    .sort({ createdAt: -1 });
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  // Execute both queries in parallel for better performance
+  const [users, total] = await Promise.all([
+    User.find(query)
+      .select("-password -__v")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    User.countDocuments(query), // Make sure to use the same query for accurate count
+  ]);
 
   res.status(200).json({
-    total: users.length,
+    success: true,
+    total,
     data: users,
   });
 });
