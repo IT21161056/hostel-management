@@ -1,64 +1,84 @@
-import React, { useState } from 'react';
-import { X, Save, User, Phone, Mail, MapPin, GraduationCap, Building2 } from 'lucide-react';
-import { Student } from '../../types';
+import { HeartPulse, Home, MapPin, User, Users, X } from "lucide-react";
+import React, { useEffect } from "react";
+import { Student } from "../../types";
+import Button from "../elements/button/Button";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  studentDefaultValues,
+  StudentSchema,
+  studentValidationSchema,
+} from "./yup";
+import Input from "../elements/input/Input";
+import Select from "../elements/select/Select";
+import { useCreateStudent } from "../../api/student";
+import { toast } from "react-toastify";
+import { bloodGroups, doms } from "../../utils/constants";
+import Textarea from "../elements/textarea/Textarea";
 
 interface AddStudentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (student: Omit<Student, 'id'>) => void;
+  onSave: (student: Omit<Student, "id">) => void;
   editStudent?: Student;
+  refetch: () => void;
 }
 
-export default function AddStudentModal({ isOpen, onClose, onSave, editStudent }: AddStudentModalProps) {
-  const [formData, setFormData] = useState<Omit<Student, 'id'>>({
-    name: editStudent?.name || '',
-    email: editStudent?.email || '',
-    phone: editStudent?.phone || '',
-    guardianName: editStudent?.guardianName || '',
-    guardianPhone: editStudent?.guardianPhone || '',
-    address: editStudent?.address || '',
-    course: editStudent?.course || '',
-    year: editStudent?.year || 1,
-    hostel: editStudent?.hostel || '',
-    room: editStudent?.room || '',
-    admissionDate: editStudent?.admissionDate || new Date().toISOString().split('T')[0],
-    monthlyFee: editStudent?.monthlyFee || 8000,
-    status: editStudent?.status || 'active',
-    bloodGroup: editStudent?.bloodGroup || '',
-    emergencyContact: editStudent?.emergencyContact || '',
-    medicalConditions: editStudent?.medicalConditions || ''
+export default function AddStudentModal({
+  isOpen,
+  onClose,
+  onSave,
+  editStudent,
+  refetch,
+}: AddStudentModalProps) {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(studentValidationSchema),
+    mode: "onChange",
+    defaultValues: studentDefaultValues,
   });
 
-  const hostels = ['Dom A', 'Dom B', 'Dom C', 'Dom D', 'Dom E', 'Dom F', 'Dom G'];
-  const courses = [
-    'B.Tech Computer Science',
-    'B.Tech Mechanical',
-    'B.Tech Electrical',
-    'B.A Economics',
-    'B.Sc Mathematics',
-    'B.Sc Physics',
-    'B.Com',
-    'BBA'
+  const filteredDOMS = [{ value: "", label: "" }, ...doms.slice(1)];
+
+  const employmentTypes = [
+    { value: "", label: "Select Employment Type" },
+    { value: "Government", label: "Government" },
+    { value: "Private", label: "Private" },
+    { value: "Self-employed", label: "Self-employed" },
+    { value: "Unemployed", label: "Unemployed" },
+    { value: "Other", label: "Other" },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave(formData);
-    onClose();
-  };
+  const { mutate: CreateStudent, isPending: pendingStudentCreate } =
+    useCreateStudent({
+      onSuccess() {
+        refetch();
+        onClose();
+        toast.success("Stduent create successful");
+      },
+      onError(error) {
+        toast.error("Stduent create unsuccessful");
+      },
+    });
 
-  const handleChange = (field: keyof typeof formData, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const onSubmit = (formData: StudentSchema) => {
+    console.log("formdata >>", formData);
+    CreateStudent(formData);
+    // onSave(formData);
+    // onClose();
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">
-            {editStudent ? 'Edit Student' : 'Add New Student'}
+            {editStudent ? "Edit Student" : "Add New Student"}
           </h2>
           <button
             onClick={onClose}
@@ -68,245 +88,488 @@ export default function AddStudentModal({ isOpen, onClose, onSave, editStudent }
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Personal Information */}
+            {/* Basic Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium text-gray-900 flex items-center">
                 <User className="h-5 w-5 mr-2" />
-                Personal Information
+                Basic Information
               </h3>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => handleChange('name', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="admissionNumber"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Admission Number"
+                      type="number"
+                      required
+                      error={errors.admissionNumber?.message}
+                    />
+                  )}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => handleChange('email', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="name"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Full Name"
+                      type="text"
+                      required
+                      error={errors.name?.message}
+                    />
+                  )}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={(e) => handleChange('phone', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="admissionDate"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Admission Date"
+                      type="date"
+                      required
+                      error={errors.admissionDate?.message}
+                    />
+                  )}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Blood Group
-                </label>
-                <select
-                  value={formData.bloodGroup}
-                  onChange={(e) => handleChange('bloodGroup', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select Blood Group</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
+                <Controller
+                  control={control}
+                  name="dateOfBirth"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Date of Birth"
+                      type="date"
+                      required
+                      error={errors.dateOfBirth?.message}
+                    />
+                  )}
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Address *
-                </label>
-                <textarea
-                  required
-                  value={formData.address}
-                  onChange={(e) => handleChange('address', e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="bloodGroup"
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label="Blood Group"
+                      options={bloodGroups}
+                      required
+                      error={errors.bloodGroup?.message}
+                    />
+                  )}
+                />
+              </div>
+
+              <div>
+                <Controller
+                  control={control}
+                  name="DOMName"
+                  render={({ field }) => (
+                    <Select
+                      required
+                      label="DOM"
+                      options={filteredDOMS}
+                      {...field}
+                      error={errors.DOMName?.message}
+                    />
+                  )}
                 />
               </div>
             </div>
 
-            {/* Guardian & Academic Information */}
+            {/* Contact Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium text-gray-900 flex items-center">
-                <Phone className="h-5 w-5 mr-2" />
-                Guardian & Academic Details
+                <MapPin className="h-5 w-5 mr-2" />
+                Contact Information
               </h3>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Guardian Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.guardianName}
-                  onChange={(e) => handleChange('guardianName', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="contact.phone"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Phone Number"
+                      type="tel"
+                      required
+                      error={errors.contact?.phone?.message}
+                    />
+                  )}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Guardian Phone *
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={formData.guardianPhone}
-                  onChange={(e) => handleChange('guardianPhone', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="contact.address"
+                  render={({ field }) => (
+                    <Textarea
+                      {...field}
+                      label="Address"
+                      required
+                      error={errors.contact?.address?.message}
+                    />
+                  )}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Emergency Contact
-                </label>
-                <input
-                  type="tel"
-                  value={formData.emergencyContact}
-                  onChange={(e) => handleChange('emergencyContact', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="contact.district"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="District"
+                      type="text"
+                      required
+                      error={errors.contact?.district?.message}
+                    />
+                  )}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Course *
-                </label>
-                <select
-                  required
-                  value={formData.course}
-                  onChange={(e) => handleChange('course', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select Course</option>
-                  {courses.map(course => (
-                    <option key={course} value={course}>{course}</option>
-                  ))}
-                </select>
+                <Controller
+                  control={control}
+                  name="contact.province"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Province"
+                      type="text"
+                      required
+                      error={errors.contact?.province?.message}
+                    />
+                  )}
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Year *
-                </label>
-                <select
-                  required
-                  value={formData.year}
-                  onChange={(e) => handleChange('year', parseInt(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value={1}>1st Year</option>
-                  <option value={2}>2nd Year</option>
-                  <option value={3}>3rd Year</option>
-                  <option value={4}>4th Year</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Medical Conditions
-                </label>
-                <textarea
-                  value={formData.medicalConditions}
-                  onChange={(e) => handleChange('medicalConditions', e.target.value)}
-                  rows={2}
-                  placeholder="Any medical conditions or allergies"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="class"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Class"
+                      type="text"
+                      required
+                      error={errors.class?.message}
+                    />
+                  )}
                 />
               </div>
             </div>
           </div>
 
-          {/* Hostel Information */}
+          {/* Family Information */}
           <div className="border-t border-gray-200 pt-6">
             <h3 className="text-lg font-medium text-gray-900 flex items-center mb-4">
-              <Building2 className="h-5 w-5 mr-2" />
-              Hostel Assignment
+              <Users className="h-5 w-5 mr-2" />
+              Family Information
             </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Hostel *
-                </label>
-                <select
-                  required
-                  value={formData.hostel}
-                  onChange={(e) => handleChange('hostel', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select Hostel</option>
-                  {hostels.map(hostel => (
-                    <option key={hostel} value={hostel}>{hostel}</option>
-                  ))}
-                </select>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Father Information */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium text-gray-900 flex items-center">
+                  <User className="h-4 w-4 mr-2" />
+                  Father's Details
+                </h4>
+
+                <div>
+                  <Controller
+                    control={control}
+                    name="father.name"
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="Name"
+                        type="text"
+                        error={errors.father?.name?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <Controller
+                    control={control}
+                    name="father.occupation"
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="Occupation"
+                        type="text"
+                        error={errors.father?.occupation?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <Controller
+                    control={control}
+                    name="father.employmentType"
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        label="Employment Type"
+                        options={employmentTypes}
+                        error={errors.father?.employmentType?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <Controller
+                    control={control}
+                    name="father.monthlyIncome"
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="Monthly Income"
+                        type="number"
+                        min="0"
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
+                        error={errors.father?.monthlyIncome?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <Controller
+                    control={control}
+                    name="father.mobile"
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="Mobile Number"
+                        type="tel"
+                        error={errors.father?.mobile?.message}
+                      />
+                    )}
+                  />
+                </div>
               </div>
 
+              {/* Mother Information */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium text-gray-900 flex items-center">
+                  <User className="h-4 w-4 mr-2" />
+                  Mother's Details
+                </h4>
+
+                <div>
+                  <Controller
+                    control={control}
+                    name="mother.name"
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="Name"
+                        type="text"
+                        error={errors.mother?.name?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <Controller
+                    control={control}
+                    name="mother.occupation"
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="Occupation"
+                        type="text"
+                        error={errors.mother?.occupation?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <Controller
+                    control={control}
+                    name="mother.employmentType"
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        label="Employment Type"
+                        options={employmentTypes}
+                        error={errors.mother?.employmentType?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <Controller
+                    control={control}
+                    name="mother.monthlyIncome"
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="Monthly Income"
+                        type="number"
+                        min="0"
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
+                        error={errors.mother?.monthlyIncome?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <Controller
+                    control={control}
+                    name="mother.mobile"
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="Mobile Number"
+                        type="tel"
+                        error={errors.mother?.mobile?.message}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Guardian Information */}
+          <div className="border-t border-gray-200 pt-6">
+            <h3 className="text-lg font-medium text-gray-900 flex items-center mb-4">
+              <Home className="h-5 w-5 mr-2" />
+              Guardian Information
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Room Number *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.room}
-                  onChange={(e) => handleChange('room', e.target.value)}
-                  placeholder="e.g., A-101"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="guardian.name"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Guardian Name"
+                      type="text"
+                      error={errors.guardian?.name?.message}
+                    />
+                  )}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Monthly Fee (₹) *
-                </label>
-                <input
-                  type="number"
-                  required
-                  value={formData.monthlyFee}
-                  onChange={(e) => handleChange('monthlyFee', parseInt(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="guardian.occupation"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Occupation"
+                      type="text"
+                      error={errors.guardian?.occupation?.message}
+                    />
+                  )}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Admission Date *
-                </label>
-                <input
-                  type="date"
-                  required
-                  value={formData.admissionDate}
-                  onChange={(e) => handleChange('admissionDate', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                <Controller
+                  control={control}
+                  name="guardian.address"
+                  render={({ field }) => (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Address
+                      </label>
+                      <textarea
+                        {...field}
+                        rows={2}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      {errors.guardian?.address && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.guardian.address.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
+
+              <div>
+                <Controller
+                  control={control}
+                  name="guardian.phoneNumber"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Phone Number"
+                      type="tel"
+                      error={errors.guardian?.phoneNumber?.message}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Additional Information */}
+          <div className="border-t border-gray-200 pt-6">
+            <h3 className="text-lg font-medium text-gray-900 flex items-center mb-4">
+              <HeartPulse className="h-5 w-5 mr-2" />
+              Additional Information
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Controller
+                  control={control}
+                  name="numberOfSiblings"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      label="Number of Siblings"
+                      type="number"
+                      min="0"
+                      max="20"
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value) || 0)
+                      }
+                      error={errors.numberOfSiblings?.message}
+                    />
+                  )}
                 />
               </div>
             </div>
@@ -320,13 +583,14 @@ export default function AddStudentModal({ isOpen, onClose, onSave, editStudent }
             >
               Cancel
             </button>
-            <button
+            <Button
               type="submit"
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              icon="material-symbols:save-outline-rounded"
+              disabled={pendingStudentCreate}
+              loading={pendingStudentCreate}
             >
-              <Save className="h-4 w-4 mr-2" />
-              {editStudent ? 'Update Student' : 'Add Student'}
-            </button>
+              {editStudent ? "Update Student" : "Add Student"}
+            </Button>
           </div>
         </form>
       </div>

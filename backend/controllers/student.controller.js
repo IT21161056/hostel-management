@@ -166,11 +166,11 @@ const getAllStudents = asyncHandler(async (req, res) => {
     ].filter(Boolean); // Remove null values from OR conditions
   }
 
+  const total = await Student.countDocuments({});
   const students = await Student.find(query).sort({ admissionNumber: 1 });
 
   res.status(200).json({
-    success: true,
-    count: students.length,
+    total,
     data: students,
   });
 });
