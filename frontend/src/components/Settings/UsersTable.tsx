@@ -13,26 +13,19 @@ import { UserResponse } from "../../api/user/types";
 interface Props {
   data?: UserResponse[];
   refetch: () => void;
+  loading?: boolean;
 }
 
-const UsersTable: FC<Props> = ({ data = [] }) => {
-  const [users, setUsers] = useState<UserResponse[]>(data);
+const UsersTable: FC<Props> = ({ data = [], loading = false }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const pageSizeOptions = [5, 10, 25, 50, 100];
 
-  useEffect(() => {
-    if (data) setUsers(data);
-  }, [data]);
-
-  // For now, filteredUsers is just users. Replace with actual filter logic if needed.
-  const filteredUsers = users;
-
   // Calculate pagination
-  const totalPages = Math.ceil(filteredUsers.length / pageSize);
+  const totalPages = Math.ceil((data?.length || 0) / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+  const paginatedUsers = data?.slice(startIndex, endIndex) || [];
 
   const goToPage = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
@@ -76,11 +69,24 @@ const UsersTable: FC<Props> = ({ data = [] }) => {
   const handleDeleteUser = (userId: string) => {
     // Implement delete logic here
     if (window.confirm("Are you sure you want to delete this user?")) {
-      setUsers((prev) => prev.filter((u) => u._id !== userId));
+      // TODO: Implement actual delete API call
+      console.log(`Delete user with ID: ${userId}`);
     }
   };
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden relative">
+      {/* Loading overlay */}
+      {loading && (
+        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-lg font-medium text-gray-700">
+              Loading users...
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
@@ -182,7 +188,43 @@ const UsersTable: FC<Props> = ({ data = [] }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {paginatedUsers.length === 0 ? (
+            {loading ? (
+              <>
+                {/* Loading skeleton rows */}
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <tr key={`loading-${index}`} className="animate-pulse">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center">
+                        <div className="h-8 w-8 bg-gray-200 rounded-full mr-3"></div>
+                        <div className="space-y-2">
+                          <div className="h-4 bg-gray-200 rounded w-24"></div>
+                          <div className="h-3 bg-gray-200 rounded w-16"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-200 rounded w-32"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-6 bg-gray-200 rounded-full w-16"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-200 rounded w-20"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-200 rounded w-20"></div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end space-x-2">
+                        <div className="h-4 w-4 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-4 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-4 bg-gray-200 rounded"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </>
+            ) : paginatedUsers.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-6 py-12 text-center">
                   <div className="text-gray-500">
@@ -292,7 +334,8 @@ const UsersTable: FC<Props> = ({ data = [] }) => {
             <select
               value={pageSize}
               onChange={(e) => setPageSize(Number(e.target.value))}
-              className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              disabled={loading}
+              className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {pageSizeOptions.map((size) => (
                 <option key={size} value={size}>
@@ -303,12 +346,21 @@ const UsersTable: FC<Props> = ({ data = [] }) => {
             <span className="text-sm text-gray-700">Per page</span>
 
             <div className="hidden sm:block text-sm text-gray-700">
-              <span className="font-medium">{startIndex + 1}</span> to{" "}
-              <span className="font-medium">
-                {Math.min(endIndex, filteredUsers.length)}
-              </span>{" "}
-              of <span className="font-medium">{filteredUsers.length}</span>{" "}
-              results
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <span>Loading...</span>
+                </div>
+              ) : (
+                <>
+                  <span className="font-medium">{startIndex + 1}</span> to{" "}
+                  <span className="font-medium">
+                    {Math.min(endIndex, data?.length || 0)}
+                  </span>
+                  of <span className="font-medium">{data?.length || 0}</span>{" "}
+                  results
+                </>
+              )}
             </div>
           </div>
 
@@ -322,7 +374,7 @@ const UsersTable: FC<Props> = ({ data = [] }) => {
               <div className="flex items-center">
                 <button
                   onClick={() => goToPage(currentPage - 1)}
-                  disabled={currentPage === 1}
+                  disabled={currentPage === 1 || loading}
                   className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -336,7 +388,7 @@ const UsersTable: FC<Props> = ({ data = [] }) => {
 
                 <button
                   onClick={() => goToPage(currentPage + 1)}
-                  disabled={currentPage === totalPages}
+                  disabled={currentPage === totalPages || loading}
                   className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
                 >
                   <ChevronRight className="h-4 w-4" />

@@ -1,9 +1,9 @@
-import React from 'react';
-import { Users, UserCheck, AlertTriangle, DollarSign } from 'lucide-react';
-import StatsCard from '../components/Dashboard/StatsCard';
-import AttendanceChart from '../components/Dashboard/AttendanceChart';
-import HostelOccupancy from '../components/Dashboard/HostelOccupancy';
-import { mockDashboardStats } from '../data/mockData';
+import React from "react";
+import { Users, UserCheck, AlertTriangle, DollarSign } from "lucide-react";
+import StatsCard from "../components/Dashboard/StatsCard";
+import AttendanceChart from "../components/Dashboard/AttendanceChart";
+import HostelOccupancy from "../components/Dashboard/HostelOccupancy";
+import { mockDashboardStats } from "../data/mockData";
 
 export default function Dashboard() {
   const stats = mockDashboardStats;
@@ -23,7 +23,9 @@ export default function Dashboard() {
           title="Present Today"
           value={stats.presentToday}
           icon={UserCheck}
-          change={`${Math.round((stats.presentToday / stats.totalStudents) * 100)}% attendance`}
+          change={`${Math.round(
+            (stats.presentToday / stats.totalStudents) * 100
+          )}% attendance`}
           changeType="positive"
           color="green"
         />

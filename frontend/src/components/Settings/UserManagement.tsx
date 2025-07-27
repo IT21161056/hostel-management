@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { Plus, Search, Shield } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext";
@@ -6,6 +6,8 @@ import AddUserModal from "./AddUserModal";
 import UsersTable from "./UsersTable";
 import { User } from "./types";
 import { useGetAllUsers } from "../../api/user";
+import Input from "../elements/input/Input";
+import Select from "../elements/select/Select";
 
 // Mock users data (in real app, this would come from API)
 const mockUsers: User[] = [
@@ -38,33 +40,39 @@ const mockUsers: User[] = [
   },
 ];
 
+const roles = [
+  { label: "All users", value: "" },
+  { label: "Administrator", value: "admin" },
+  { label: "Warden", value: "warden" },
+  { label: "Accountant", value: "accountant" },
+  { label: "Kitchen Staff", value: "kitchen staff" },
+];
+
 export default function UserManagement() {
-  const [users, setUsers] = useState<User[]>(mockUsers);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | undefined>();
+  const [role, setRole] = useState(roles[0].value);
 
   const { hasPermission } = useAuth();
 
-  const roles = ["admin", "warden", "lecturer"];
+  // Memoize the params to prevent unnecessary re-renders
+  const queryParams = useMemo(
+    () => ({
+      search: searchTerm || undefined,
+      role: role || undefined,
+    }),
+    [searchTerm, role]
+  );
 
-  const { data: userData, isLoading, refetch: refetchUsers } = useGetAllUsers();
-
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case "admin":
-        return "Administrator";
-      case "warden":
-        return "Warden";
-      case "lecturer":
-        return "Lecturer";
-      default:
-        return role;
-    }
-  };
+  const {
+    data: userData,
+    isLoading,
+    refetch: refetchUsers,
+  } = useGetAllUsers(queryParams);
 
   // Reset to first page when filters change
   useEffect(() => {
@@ -72,32 +80,25 @@ export default function UserManagement() {
   }, [searchTerm, filterRole, pageSize]);
 
   const handleAddUser = (userData: Omit<User, "id">) => {
-    const newUser: User = {
-      ...userData,
-      id: Date.now().toString(),
-    };
-    setUsers((prev) => [...prev, newUser]);
+    // TODO: Implement actual API call to add user
+    console.log("Add user:", userData);
+    refetchUsers(); // Refresh the data after adding
   };
 
   const handleEditUser = (userData: Omit<User, "id">) => {
     if (editingUser) {
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.id === editingUser.id
-            ? {
-                ...userData,
-                id: editingUser.id,
-              }
-            : u
-        )
-      );
+      // TODO: Implement actual API call to edit user
+      console.log("Edit user:", userData);
       setEditingUser(undefined);
+      refetchUsers(); // Refresh the data after editing
     }
   };
 
   const handleDeleteUser = (userId: string) => {
     if (confirm("Are you sure you want to delete this user?")) {
-      setUsers((prev) => prev.filter((u) => u.id !== userId));
+      // TODO: Implement actual API call to delete user
+      console.log("Delete user:", userId);
+      refetchUsers(); // Refresh the data after deleting
     }
   };
 
@@ -151,33 +152,29 @@ export default function UserManagement() {
       <div className="flex flex-col lg:flex-row gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <input
+          <Input
             type="text"
             placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
           />
         </div>
 
         <div className="flex gap-3">
-          <select
-            value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-          >
-            <option value="">All Roles</option>
-            {roles.map((role) => (
-              <option key={role} value={role}>
-                {getRoleLabel(role)}
-              </option>
-            ))}
-          </select>
+          <Select
+            options={roles}
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          />
         </div>
       </div>
 
       {/* Table Container */}
-      <UsersTable data={userData?.data} refetch={refetchUsers} />
+      <UsersTable
+        data={userData?.data}
+        refetch={refetchUsers}
+        loading={isLoading}
+      />
 
       {/* Add/Edit User Modal */}
       <AddUserModal

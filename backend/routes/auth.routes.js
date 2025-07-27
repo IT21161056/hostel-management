@@ -68,15 +68,9 @@ router.route("/login").post(login);
 /**
  * @swagger
  * /auth/refresh:
- *   post:
+ *   get:
  *     summary: Refresh access token
  *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/RefreshToken'
  *     responses:
  *       200:
  *         description: Successfully refreshed token
@@ -93,7 +87,7 @@ router.route("/login").post(login);
  *       400:
  *         description: Bad request - Missing refresh token
  */
-router.route("/refresh").post(refresh);
+router.route("/refresh").get(refresh);
 
 /**
  * @swagger

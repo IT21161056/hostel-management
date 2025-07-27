@@ -1,5 +1,5 @@
 import useGetRequest from "../hooks/useGetRequest";
 import { GetAllUsersPaginated } from "./types";
 
-export const useGetAllUsers = () =>
-  useGetRequest<GetAllUsersPaginated>(`/users`);
+export const useGetAllUsers = (params?: Record<string, any>) =>
+  useGetRequest<GetAllUsersPaginated>(`/users`, params);

@@ -126,3 +126,29 @@ export interface FinancialReport {
     pending: number;
   }[];
 }
+
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  nic: string;
+  phone: string;
+  role: "admin" | "warden" | "accountant" | "kitchen";
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  accessToken: string;
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string;
+}
