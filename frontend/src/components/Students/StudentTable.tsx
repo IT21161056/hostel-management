@@ -115,8 +115,8 @@ export default function StudentTable() {
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Students</h1>
-          <p className="text-sm text-gray-600 mt-1">Manage student profiles and information</p>
+          {/* <h1 className="text-2xl font-bold text-gray-900">Students</h1>
+          <p className="text-gray-600 mt-1">Manage student profiles and information</p> */}
         </div>
         
         {hasPermission('manage_students') && (

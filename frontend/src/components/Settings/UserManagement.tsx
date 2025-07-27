@@ -133,10 +133,10 @@ export default function UserManagement() {
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
+          {/* <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
           <p className="text-sm text-gray-600 mt-1">
             Manage system users and their permissions
-          </p>
+          </p> */}
         </div>
 
         <button

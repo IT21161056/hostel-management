@@ -18,12 +18,12 @@ export default function Settings() {
   return (
     <ProtectedRoute permission="manage_settings">
       <div className="space-y-6">
-        <div>
+        {/* <div>
           <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
           <p className="text-gray-600">
             Manage system configuration and preferences
           </p>
-        </div>
+        </div> */}
 
         {/* Tab Navigation */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">

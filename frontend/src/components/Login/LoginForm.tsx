@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Building2, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+//import collegeLogo from "../../assets/logo.jpg";
+import collegeLogo from "../../assets/ACH_logo.jpg";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -59,17 +61,32 @@ export default function LoginForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center px-4">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <img 
+          src={collegeLogo} 
+          alt="Watermark" 
+          className="opacity-15 w-3/4 max-w-2xl object-contain" 
+        />
+      </div>
+      
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center">
-            <div className="p-3 bg-blue-600 rounded-full">
+            {/* <div className="p-3 bg-blue-600 rounded-full">
               <Building2 className="h-12 w-12 text-white" />
+            </div> */}
+            <div className="p-1 bg-white rounded-full shadow-sm">
+              <img 
+                src={collegeLogo} 
+                alt="Ananda College Logo" 
+                className="h-32 w-32 object-cover" // or object-contain
+              />
             </div>
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
+          <h2 className="mt-2 text-3xl font-bold text-rose-800">
             Ananda College
           </h2>
-          <p className="mt-2 text-sm text-gray-600">Hostel Management System</p>
+          <p className="mt-2 text-sm text-rose-800">Hostel Management System</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-8">
@@ -136,7 +153,7 @@ export default function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
             >
               {loading ? (
                 <div className="flex items-center">
@@ -149,7 +166,7 @@ export default function LoginForm() {
             </button>
           </form>
 
-          <div className="mt-8 border-t border-gray-200 pt-6">
+          {/* <div className="mt-8 border-t border-gray-200 pt-6">
             <p className="text-sm text-gray-600 mb-4 text-center font-medium">
               Demo Login Credentials
             </p>
@@ -183,7 +200,7 @@ export default function LoginForm() {
                 password
               </span>
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ export default function MealPlanWeek() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="mt-4 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <Calendar className="h-8 w-8 text-blue-600" />
             <div className="ml-4">
@@ -19,7 +19,7 @@ export default function MealPlanWeek() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="mt-4 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <DollarSign className="h-8 w-8 text-green-600" />
             <div className="ml-4">
@@ -29,7 +29,7 @@ export default function MealPlanWeek() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="mt-4 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <Users className="h-8 w-8 text-purple-600" />
             <div className="ml-4">
