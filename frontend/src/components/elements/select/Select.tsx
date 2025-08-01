@@ -14,12 +14,26 @@ interface SelectProps
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, options, error, loading, className = "", ...props }, ref) => (
-    <div className="mb-4">
+  (
+    {
+      label,
+      options,
+      error,
+      loading,
+      className = "",
+      required = false,
+      ...props
+    },
+    ref
+  ) => (
+    <div>
       {label && (
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
-          {label}
-        </label>
+        <div className="space-x-1 flex">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
+            {label}
+          </label>
+          {required && <label className="text-red-500">*</label>}
+        </div>
       )}
       <div className="relative flex items-center">
         <select

@@ -8,13 +8,19 @@ interface InputProps
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, loading, className = "", ...props }, ref) => {
+  (
+    { label, error, loading, className = "", required = false, ...props },
+    ref
+  ) => {
     return (
-      <div className="mb-4">
+      <div>
         {label && (
-          <label className="block text-sm font-semibold text-gray-700 mb-1">
-            {label}
-          </label>
+          <div className="space-x-1 flex">
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              {label}
+            </label>
+            {required && <label className="text-red-500">*</label>}
+          </div>
         )}
         <div className="relative flex items-center">
           <input
