@@ -27,7 +27,7 @@ const studentSchema = new Schema(
       type: String,
       enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
     },
-    DOMName: { type: String },
+    dorm: { type: String },
 
     // Contact Information
     contact: {
