@@ -14,7 +14,7 @@ const createStudent = asyncHandler(async (req, res) => {
     admissionDate,
     dateOfBirth,
     bloodGroup,
-    DOMName,
+    dorm,
     contact,
     class: studentClass,
     father,
@@ -71,7 +71,7 @@ const createStudent = asyncHandler(async (req, res) => {
 
   // Add optional fields if they exist
   if (bloodGroup) studentData.bloodGroup = bloodGroup;
-  if (DOMName) studentData.DOMName = DOMName;
+  if (dorm) studentData.dorm = dorm;
   if (numberOfSiblings) studentData.numberOfSiblings = numberOfSiblings;
 
   // Handle father details
@@ -132,7 +132,7 @@ const getAllStudents = asyncHandler(async (req, res) => {
     search,
     admissionNumber,
     name,
-    dom,
+    dorm,
     class: studentClass,
     isActive,
   } = req.query;
@@ -150,8 +150,8 @@ const getAllStudents = asyncHandler(async (req, res) => {
     query.class = studentClass;
   }
 
-  if (dom) {
-    query.DOMName = dom;
+  if (dorm) {
+    query.dorm = dorm;
   }
 
   if (isActive !== undefined) {
@@ -226,11 +226,12 @@ const updateStudent = asyncHandler(async (req, res) => {
     "admissionDate",
     "dateOfBirth",
     "bloodGroup",
-    "DOMName",
+    "dorm",
     "class",
     "numberOfSiblings",
     "isActive",
   ];
+
   topLevelFields.forEach((field) => {
     if (updateData[field] !== undefined) {
       student[field] = updateData[field];

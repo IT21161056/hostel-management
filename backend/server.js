@@ -19,6 +19,7 @@ import { getSwaggerOptions } from "./config/swaggerConfig.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import studentRoutes from "./routes/student.routes.js";
+import attendanceRoutes from "./routes/attendance.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -104,6 +105,7 @@ app.get(`${BASE_URL}`, (req, res) => {
 app.use(`${BASE_URL}/auth`, authRoutes);
 app.use(`${BASE_URL}/users`, userRoutes);
 app.use(`${BASE_URL}/student`, studentRoutes);
+app.use(`${BASE_URL}/attendance`, attendanceRoutes);
 
 app.all("*", (req, res) => {
   res.status(404);
