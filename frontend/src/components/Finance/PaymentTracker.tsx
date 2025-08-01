@@ -74,8 +74,8 @@ export default function PaymentTracker() {
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Payment Tracking</h1>
-          <p className="text-sm text-gray-600 mt-1">Monitor student payments and outstanding dues</p>
+          {/* <h1 className="text-2xl font-bold text-gray-900">Payment Tracking</h1>
+          <p className="text-sm text-gray-600 mt-1">Monitor student payments and outstanding dues</p> */}
         </div>
       </div>
 

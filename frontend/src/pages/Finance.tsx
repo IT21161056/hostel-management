@@ -7,10 +7,10 @@ export default function Finance() {
   const [activeTab, setActiveTab] = useState<'payments' | 'invoices'>('payments');
 
   return (
-    <div className="space-y-6">
+    <div className="">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Finance</h2>
-        <p className="text-gray-600">Track payments, manage invoices, and monitor hostel finances</p>
+        {/* <h2 className="text-2xl font-bold text-gray-900">Finance</h2>
+        <p className="text-gray-600">Track payments, manage invoices, and monitor hostel finances</p> */}
       </div>
 
       {/* Tab Navigation */}

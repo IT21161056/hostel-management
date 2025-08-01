@@ -70,8 +70,8 @@ export default function AttendanceReports() {
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Attendance Reports</h1>
-          <p className="text-sm text-gray-600 mt-1">Generate and export attendance reports</p>
+          {/* <h1 className="text-2xl font-bold text-gray-900">Attendance Reports</h1> */}
+          {/* <p className="text-sm text-gray-600 mt-1">Generate and export attendance reports</p> */}
         </div>
         
         <div className="flex gap-3">

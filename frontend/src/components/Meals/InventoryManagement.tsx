@@ -171,11 +171,11 @@ export default function InventoryManagement() {
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Kitchen Inventory</h1>
-          <p className="text-sm text-gray-600 mt-1">Manage kitchen inventory and procurement</p>
+          {/* <h1 className="text-2xl font-bold text-gray-900">Kitchen Inventory</h1>
+          <p className="text-sm text-gray-600 mt-1">Manage kitchen inventory and procurement</p> */}
         </div>
         
-        <div className="flex gap-3">
+        <div className="mt-4 flex gap-3">
           <button
             onClick={generateProcurementList}
             className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"

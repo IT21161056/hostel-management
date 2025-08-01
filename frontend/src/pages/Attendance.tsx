@@ -8,10 +8,10 @@ export default function Attendance() {
 
   return (
     <div className="space-y-6">
-      <div>
+      {/* <div>
         <h2 className="text-2xl font-bold text-gray-900">Attendance</h2>
         <p className="text-gray-600">Track daily student attendance and generate reports</p>
-      </div>
+      </div> */}
 
       {/* Tab Navigation */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200">

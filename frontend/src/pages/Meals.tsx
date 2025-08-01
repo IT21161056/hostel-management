@@ -7,10 +7,10 @@ export default function Meals() {
   const [activeTab, setActiveTab] = useState<'planning' | 'inventory'>('planning');
 
   return (
-    <div className="space-y-6">
+    <div className=""> 
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Meal Planning</h2>
-        <p className="text-gray-600">Manage weekly meal plans and kitchen inventory</p>
+        {/* <h2 className="text-2xl font-bold text-gray-900">Meal Planning</h2>
+        <p className="text-gray-600">Manage weekly meal plans and kitchen inventory</p> */}
       </div>
 
       {/* Tab Navigation */}
